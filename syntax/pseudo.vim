@@ -9,7 +9,7 @@ endif
 
 let b:current_syntax = "Pseudo"
 
-syn keyword pseudoConditional if else endif
+syn keyword pseudoConditional if then else endif
 
 " Syntax Pairs
 syntax keyword pseudoRepeat do while endwhile
@@ -19,6 +19,7 @@ syntax keyword pseudoKeyword return lock
 syntax keyword pseudoKeyword for endfor
 
 syntax keyword pseudoFunction proc fun
+syntax keyword pseudoFunction atomic
 
 syntax match pseudoOperator "\v\:\="
 syntax match pseudoOperator "\v\="
