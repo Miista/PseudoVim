@@ -11,7 +11,9 @@ let b:current_syntax = "Pseudo"
 
 syn keyword pseudoConditional if else endif
 
+" Syntax Pairs
 syntax keyword pseudoRepeat do while endwhile
+syntax keyword pseudoKeyword begin end
 
 syntax keyword pseudoKeyword return lock
 syntax keyword pseudoKeyword for endfor
