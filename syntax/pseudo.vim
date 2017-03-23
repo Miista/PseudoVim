@@ -7,7 +7,7 @@ if exists("b:current_syntax")
   finish
 endif
 
-syntax keyword pseudoConditional if else endif
+syn keyword pseudoConditional if else endif
 
 syntax keyword pseudoRepeat do while endwhile
 
@@ -31,7 +31,7 @@ syntax region pseudoString start=/\v"/ skip=/\v\\./ end=/\v"/
 highlight link pseudoConditional Conditional
 highlight link pseudoRepeat Repeat
 highlight link pseudoKeyword Keyword
-highlight link pseudoFunction Function
+highlight link pseudoFunction Structure
 highlight link pseudoOperator Operator
 highlight link pseudoNumber Number
 highlight link pseudoString String
