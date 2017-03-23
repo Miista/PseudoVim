@@ -17,10 +17,26 @@ function! GetPseudoIndentLevel(lnum)
   elseif EndsBlock(a:lnum)
     return GetIndentStartedByBlock(a:lnum) - 1
   else
-    return GetIndentStartedByBlock(a:lnum-1)
+    return GetIndentOfSurroundingBlock(a:lnum)
   endif
 
   return '0'
+endfunction
+
+" Returns the indent level of the surrounding block.
+" That is, if the line does not start nor end a block,
+" its indent level should 
+" If the line is not surrounded by a block,
+" 0 (zero) is returned.
+function! GetIndentOfSurroundingBlock(lnum)
+  if a:lnum < 0
+    return 0
+  endif
+
+  if BeginsBlock(a:lnum-1)
+    return 1 + IndentLevel(a:lnum-1)
+  endif
+  return IndentLevel(a:lnum-1) "GetIndentOfSurroundingBlock(a:lnum-1)
 endfunction
 
 " Returns the indent level started introduced on the given line.
