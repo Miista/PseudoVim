@@ -7,6 +7,8 @@ if exists("b:current_syntax")
   finish
 endif
 
+let b:current_syntax = "Pseudo"
+
 syn keyword pseudoConditional if else endif
 
 syntax keyword pseudoRepeat do while endwhile
@@ -35,5 +37,3 @@ highlight link pseudoFunction Structure
 highlight link pseudoOperator Operator
 highlight link pseudoNumber Number
 highlight link pseudoString String
-
-let b:current_syntax = "Pseudo"
