@@ -88,7 +88,7 @@ function! GetLineType(lnum)
     return g:StartAndEnd
   elseif line =~? '\v^\s*(else|end(if|while)?)$'
     return g:End
-  elseif line =~? '\v.*\:$'
+  elseif line =~? '\v.*\:$' || line =~? '\v^\s*if.*then$'
     return g:Start
   else
     return g:Normal
