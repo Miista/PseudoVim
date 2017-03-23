@@ -42,58 +42,6 @@ function! GetPseudoIndentLevel(lnum)
   return 1
 endfunction
 
-" Returns the indent level imposed by the line, if any.
-" If the line imposes a new scope (or indent level),
-" that level is returned.
-" If the line is a normal one, its indent level is returned.
-function! GetScopeIndentLevel(lnum)
-  " Have we reached the top of the file?
-  if a:lnum < 0
-    return 0
-  endif
-
-  let prev = a:lnum - 1
-  let lt = GetLineType(prev)
-  if g:Normal == lt
-    return IndentLevel(prev)
-  elseif g:Start == lt
-    return 1 + IndentLevel(prev)
-  elseif g:StartAndEnd == lt
-    return 1 + IndentLevel(prev)
-  endif
-endfunction
-" Returns the indent level of the surrounding block.
-" That is, if the line does not start nor end a block,
-" its indent level should 
-" If the line is not surrounded by a block,
-" 0 (zero) is returned.
-function! GetIndentOfSurroundingBlock(lnum)
-  if a:lnum < 0
-    return 0
-  endif
-
-  if BeginsBlock(a:lnum-1)
-    return 1 + IndentLevel(a:lnum-1)
-  endif
-  return SyntheticIndentLevel(a:lnum-1) "GetIndentOfSurroundingBlock(a:lnum-1)
-endfunction
-
-" Returns the indent level started introduced on the given line.
-" If no block is started on that line,
-" the previous lines are searched.
-function! GetIndentStartedByBlock(lnum)
-  " Have we gone beyond the beginning of the file?
-  if a:lnum < 0
-    return '0'
-  endif
-  let lt = GetLineType(a:lnum)
-  if BeginsBlock(a:lnum)
-    return 1 + IndentLevel(a:lnum)
-  else
-    return GetIndentStartedByBlock(a:lnum-1)
-  endif
-endfunction
-
 " Returns a number indicating the level of indentation for the given line.
 " Note that this number should be multiplied by &shiftwidth
 " in order to set the correct indentation value.
@@ -150,23 +98,6 @@ function! GetLineType(lnum)
   endif
 endfunction
 
-" Returns true if the line begins a block.
-" A block has the following syntax:
-" <statement> ... :
-"   ...           ^
-" end             |
-"
-" Note, the colon marks the beginning of a new block.
-function! BeginsBlock(lnum)
-  return getline(a:lnum) =~? '\v.*\:$'
-endfunction
-
-" Returns true if the line ends a block.
-" Blocks are ended by >end< optionally followed by a keyword.
-function! EndsBlock(lnum)
-  return getline(a:lnum) =~? '\v^\s*end(if|while)?$'
-endfunction
-
 " Block Type {{{
 
 let g:Generic = 0
@@ -205,25 +136,5 @@ function! StartsAndEndsWith(line, starts)
 endfunction
 
 " }}}
-
-" function! PrevIndentLevel(level, lnum)
-"   if BeginsBlock(a:lnum)
-"     return IndentLevel(a:lnum)
-"   endif
-"   if IndentLevel(a:lnum) < a:level
-"     return IndentLevel(a:lnum)
-"   else
-"     return PrevIndentLevel(a:level, a:lnum-1)
-"   endif
-" endfunction
-"
-" function! RecursiveIndentLevel(lnum)
-"   if a:lnum < 0
-"     return 0
-"   endif
-"   if IndentLevel(a:lnum) = 0
-"     return RecursiveIndentLevel(a:lnum-1)
-"   endif
-" endfunction
 
 " vim: foldmethod=marker
