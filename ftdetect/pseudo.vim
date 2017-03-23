@@ -1,1 +1,1 @@
-au BufNewFile,BufRead *.pseudo set filetype=pseudo
+autocmd BufNewFile,BufRead *.pseudo set filetype=pseudo
