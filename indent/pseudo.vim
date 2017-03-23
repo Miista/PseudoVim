@@ -28,10 +28,8 @@ function! GetPseudoIndentLevel(lnum)
     " Get the line type of the parent line
     let lt = GetLineType(prev)
     if g:Normal == lt
-      echom "no"
       return SyntheticIndentLevel(prev)
     elseif g:Start == lt
-      echom "j"
       return 1 + IndentLevel(prev)
     elseif g:End == lt
       return IndentLevel(prev)
@@ -39,7 +37,6 @@ function! GetPseudoIndentLevel(lnum)
       return 1 + IndentLevel(prev)
     endif
   endif
-  return 1
 endfunction
 
 " Returns a number indicating the level of indentation for the given line.
@@ -97,44 +94,5 @@ function! GetLineType(lnum)
     return g:Normal
   endif
 endfunction
-
-" Block Type {{{
-
-let g:Generic = 0
-let g:If      = 1
-let g:Do      = 2
-let g:For     = 3
-let g:Lock    = 4
-let g:Proc    = 5
-
-" Returns a Number indicating the type of the block.
-" If the line does not indicate any block,
-" the previous lines are searched.
-function! GetBlockType(lnum)
-  " If the line number is out of range,
-  " return a generic block type.
-  if a:lnum < 0
-    return g:Generic
-  endif
-
-  let line = getline(a:lnum)
-  if StartsAndEndsWith(line, "if")
-    return g:If
-  elseif StartsAndEndsWith(line, "for")
-    return g:For
-  elseif StartsAndEndsWith(line, "lock")
-    return g:Lock
-  else
-    return GetBlockType(a:lnum-1)
-  endif
-endfunction
-
-" Returns true if the line starts with 'starts',
-" optionally preceeded by any number of spaces.
-function! StartsAndEndsWith(line, starts)
-  return a:line =~? '\v^\s*'.a:starts.'.*\:$'
-endfunction
-
-" }}}
 
 " vim: foldmethod=marker
