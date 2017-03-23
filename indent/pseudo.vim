@@ -1,7 +1,7 @@
 setlocal shiftwidth=2
 setlocal tabstop=2
-set indentexpr=GetPseudoIndentValue(v:lnum)
-set indentkeys+=~end,<:>
+setlocal indentexpr=GetPseudoIndentValue(v:lnum)
+setlocal indentkeys+=~end,<:>
 
 " Returns a number indicating the indent value for the specific line.
 function! GetPseudoIndentValue(lnum)
