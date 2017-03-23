@@ -66,6 +66,29 @@ function! IsBlank(lnum)
   return getline(a:lnum) =~? '\v^\s*$'
 endfunction
 
+let g:StartAndEnd = -1
+let g:Start       = -2
+let g:End         = -3
+let g:Normal      = -4
+
+" Returns a number indicating the line type.
+" A line either starts a block, ends a block,
+" or does *both*.
+" If it does neither, then it's a normal line
+" and we don't care!
+function! GetLineType(lnum)
+  let line = getline(a:lnum)
+  if line =~? '\v.*else$'
+    return g:StartAndEnd
+  elseif line =~? '\v^\s*(else|end(if|while)?)$'
+    return g:End
+  elseif line =~? '\v.*\:$'
+    return g:Start
+  else
+    return g:Normal
+  endif
+endfunction
+
 " Returns true if the line begins a block.
 " A block has the following syntax:
 " <statement> ... :
