@@ -11,18 +11,57 @@ endfunction
 " Returns a number indicating the indent level to be used for the line.
 " Note that this number must be multiplied by &shiftwidth.
 function! GetPseudoIndentLevel(lnum)
-  let prevLine = getline(a:lnum-1)
-  if BeginsBlock(a:lnum)
-    return GetIndentStartedByBlock(a:lnum) - 1
-  elseif EndsBlock(a:lnum)
-    return GetIndentStartedByBlock(a:lnum) - 1
-  else
-    return GetIndentOfSurroundingBlock(a:lnum)
+  " Are we at the head of the file?
+  if a:lnum == 0
+    return 0
   endif
 
-  return '0'
+  let lt = GetLineType(a:lnum)
+  let prev = a:lnum - 1
+  if g:Start == lt
+    return SyntheticIndentLevel(prev)
+  elseif g:End == lt
+    return SyntheticIndentLevel(prev) - 1
+  elseif g:StartAndEnd == lt
+    return SyntheticIndentLevel(prev) - 1
+  elseif g:Normal == lt
+    " Get the line type of the parent line
+    let lt = GetLineType(prev)
+    if g:Normal == lt
+      echom "no"
+      return SyntheticIndentLevel(prev)
+    elseif g:Start == lt
+      echom "j"
+      return 1 + IndentLevel(prev)
+    elseif g:End == lt
+      return IndentLevel(prev)
+    elseif g:StartAndEnd == lt
+      return 1 + IndentLevel(prev)
+    endif
+  endif
+  return 1
 endfunction
 
+" Returns the indent level imposed by the line, if any.
+" If the line imposes a new scope (or indent level),
+" that level is returned.
+" If the line is a normal one, its indent level is returned.
+function! GetScopeIndentLevel(lnum)
+  " Have we reached the top of the file?
+  if a:lnum < 0
+    return 0
+  endif
+
+  let prev = a:lnum - 1
+  let lt = GetLineType(prev)
+  if g:Normal == lt
+    return IndentLevel(prev)
+  elseif g:Start == lt
+    return 1 + IndentLevel(prev)
+  elseif g:StartAndEnd == lt
+    return 1 + IndentLevel(prev)
+  endif
+endfunction
 " Returns the indent level of the surrounding block.
 " That is, if the line does not start nor end a block,
 " its indent level should 
@@ -36,7 +75,7 @@ function! GetIndentOfSurroundingBlock(lnum)
   if BeginsBlock(a:lnum-1)
     return 1 + IndentLevel(a:lnum-1)
   endif
-  return IndentLevel(a:lnum-1) "GetIndentOfSurroundingBlock(a:lnum-1)
+  return SyntheticIndentLevel(a:lnum-1) "GetIndentOfSurroundingBlock(a:lnum-1)
 endfunction
 
 " Returns the indent level started introduced on the given line.
@@ -47,6 +86,7 @@ function! GetIndentStartedByBlock(lnum)
   if a:lnum < 0
     return '0'
   endif
+  let lt = GetLineType(a:lnum)
   if BeginsBlock(a:lnum)
     return 1 + IndentLevel(a:lnum)
   else
@@ -59,6 +99,27 @@ endfunction
 " in order to set the correct indentation value.
 function! IndentLevel(lnum)
   return indent(a:lnum) / &shiftwidth
+endfunction
+
+" Returns a number indicating the supposed level of indentation for the given
+" line.
+" The supposed level is used for when a line has no visual indent level,
+" but semantically it needs to have one.
+" This is most often the case when a line break separates two statements
+" of the same indent level.
+" See example below.
+"
+" proc SomeProc:
+" --v := 1
+" --      <---- This line has indent level = 0,
+"               but synthetic indent level = 1
+" --a := v
+function! SyntheticIndentLevel(lnum)
+  if IsBlank(a:lnum)
+    return SyntheticIndentLevel(a:lnum - 1)
+  else
+    return IndentLevel(a:lnum)
+  endif
 endfunction
 
 " Returns true if the line is blank.
