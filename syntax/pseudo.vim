@@ -1,3 +1,8 @@
+" Vim syntax file
+" Language: Pseudo
+" Maintainer: Søren Palmund
+" Latest Revision: 23 March 2017
+
 if exists("b:current_syntax")
   finish
 endif
