@@ -5,19 +5,16 @@ set indentkeys+=~end,<:>
 
 " Returns a number indicating the indent value for the specific line.
 function! GetPseudoIndentValue(lnum)
-  echom "lll"
   return &shiftwidth * GetPseudoIndentLevel(a:lnum)
 endfunction
 
 " Returns a number indicating the indent level to be used for the line.
 " Note that this number must be multiplied by &shiftwidth.
 function! GetPseudoIndentLevel(lnum)
-  echom "here"
   let prevLine = getline(a:lnum-1)
   if BeginsBlock(a:lnum)
     return GetIndentStartedByBlock(a:lnum) - 1
   elseif EndsBlock(a:lnum)
-    echom "ends"
     return GetIndentStartedByBlock(a:lnum) - 1
   else
     return GetIndentStartedByBlock(a:lnum-1)
